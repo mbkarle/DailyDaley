@@ -1,7 +1,7 @@
 {
     "name": "DailyDaley",
     "version": "1.1",
-    "description": "Praise TDot",
+    "description": "An extension to revolutionize your internet experience. Special thanks to Mr. Daley himself; this couldn't exist without him.",
     "permissions": ["declarativeContent", "storage"],
     "background": {
         "scripts": ["background.js"],
