@@ -3,7 +3,7 @@ var images = document.getElementsByTagName("img");
 console.log(images);
 function replaceImages(images){
     for(var i = 0; i < images.length; i++){
-        var number = Math.floor(Math.random() * 10);
+        var number = Math.floor(Math.random() * 12);
         /*var ending = (number == 0 ||number== 8)?".png":".jpg";*/
         var replacement = chrome.runtime.getURL("images/" + number + ".png"); 
         images[i].src = replacement; 
