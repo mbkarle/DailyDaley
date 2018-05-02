@@ -23,7 +23,12 @@ var observeDOM = (function(){
                     callback(mutations[0].addedNodes);
                 }*/
                 for(var mutation of mutations){
-                    callback(mutation.addedNodes);
+                    if(mutation.addedNodes){
+                        callback(mutation.addedNodes);
+                    }
+                    if(mutation.attributeName != null && !mutation.target.src.startsWith("chrome")){
+                        callback([mutation.target]);
+                    }
                 }
 
             });
@@ -38,7 +43,7 @@ var observeDOM = (function(){
 })();
 
 // Observe a specific DOM element:
-window.onload = function(){
+/*window.onload = function(){*/
     chrome.storage.sync.get("DailyDaley", function(response){
     if(response["DailyDaley"]){
         if(images.length){
@@ -70,4 +75,4 @@ window.onload = function(){
         });
     }
     });
-}
+//}
