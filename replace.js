@@ -1,14 +1,32 @@
 //image replace
 var images = document.getElementsByTagName("img");
+var pictures = document.getElementsByTagName("PICTURE");
 console.log(images);
 function replaceImages(images){
     for(var i = 0; i < images.length; i++){
-        var number = Math.floor(Math.random() * 15);
-        /*var ending = (number == 0 ||number== 8)?".png":".jpg";*/
-        var replacement = chrome.runtime.getURL("images/" + number + ".png"); 
-        images[i].src = replacement; 
-        images[i].srcset = replacement;
+        var replacement = getRandURL();
+        if(!images[i].src.startsWith("chrome")){
+            images[i].src = replacement; 
+        }
+        if(!images[i].srcset.startsWith("chrome")){
+            images[i].srcset = replacement;
+        }
     }
+}
+
+function replacePictures(pictures){//for the rare picture tag
+    for(var i = 0; i < pictures.length; i++){
+        var replacement = getRandURL();
+        for(var source of pictures[i].getElementsByTagName("SOURCE")){
+            source.srcset = replacement;
+//            source.src = replacement;
+        }
+    }
+}
+
+function getRandURL(){
+    var number = Math.floor(Math.random() * 15);
+    return chrome.runtime.getURL("images/"+number+".png");
 }
 
 var observeDOM = (function(){
@@ -55,23 +73,39 @@ var observeDOM = (function(){
                 replaceImages(images);
             }, 3000);
         }
+        if(pictures.length){
+            replacePictures(pictures);
+        }
         observeDOM( document.body ,function(nodes){ 
             console.log(nodes);
             var img = [];
+            var pic = [];
             for(var i = 0; i < nodes.length; i++){
                 if(nodes[i].tagName == "IMG"){
                     img.push(nodes[i]);
                 }
+                else if(nodes[i].tagName == "SOURCE" && !nodes[i].srcset.startsWith("chrome")){
+                    pic.push(nodes[i]);
+                }
                 if(nodes[i].tagName != undefined){
                 var childImages = nodes[i].getElementsByTagName("img");
+                var childPictures = nodes[i].getElementsByTagName("PICTURE");
                 for(var j = 0; j < childImages.length; j++){
                     img.push(childImages[j]);
+                }
+                for(var j = 0; j<childImages.length; j++){
+                    pic.push(childPictures[j]);
                 }
                 }
             }
             if(img.length){
                 replaceImages(img);
             }
+            if(pic.length){
+                replacePictures(pictures);
+            }
+        
+            
         });
     }
     });
